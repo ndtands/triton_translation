@@ -1,0 +1,34 @@
+version: '3.7'
+x-triton-common: &triton-common
+  deploy:
+    resources:
+      limits:
+        cpus: "10"
+      reservations:
+        devices:
+        - driver: nvidia
+          device_ids: ['0'] # If it is not set, use all devices
+          capabilities: [gpu]
+
+services:
+  translation_service:
+    <<: *triton-common
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - IP_HOST=118.69.40.9
+      - TOKENIZERS_PARALLELISM=false
+      - PYTHONIOENCODING=UTF-8
+      - PYTORCH_NVFUSER_DISABLE=fallback
+    shm_size: 50Gb
+    command: tritonserver --model-repository=/models --exit-timeout-secs=10 --exit-on-error=false
+    volumes:
+      - ../data_storage/hidden_cv:/hidden_cv
+      - ../data_storage/store_img_deploy:/store_img_deploy
+      - ./:/workspace/
+      - ./model_repository:/models
+    ports:
+      - "9090:8000"
+      - "9091:8001"
+      - "9092:8002"

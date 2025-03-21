@@ -1,0 +1,30 @@
+name: "en2vi_pre_process"
+backend: "python"
+max_batch_size: 1000
+
+dynamic_batching {
+    max_queue_delay_microseconds: 100
+}
+
+input [
+  {
+    name: "texts"
+    data_type: TYPE_STRING
+    dims: [ -1 ]
+  }
+]
+
+output [
+  {
+    name: "input_ids"
+    data_type: TYPE_INT32
+    dims: [ -1 ]
+  }
+]
+
+instance_group [
+  {
+    count: 1
+    kind: KIND_CPU
+  }
+]

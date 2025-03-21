@@ -1,0 +1,41 @@
+name: "en2vi_ensemble"
+platform: "ensemble"
+max_batch_size: 1000
+
+input [
+  {
+    name: "texts"
+    data_type: TYPE_STRING
+    dims: [ -1 ]
+  }
+]
+output [
+  {
+    name: "translated_texts"
+    data_type: TYPE_STRING
+    dims: [ -1 ]
+  }
+]
+
+ensemble_scheduling {
+  step [
+    {
+      model_name: "en2vi_pre_process"
+      model_version: -1
+      input_map { key: "texts" value: "texts" }
+      output_map { key: "input_ids" value: "pre_output" }
+    },
+    {
+      model_name: "en2vi_model"
+      model_version: -1
+      input_map { key: "input_ids" value: "pre_output" }
+      output_map { key: "output_ids" value: "model_output" }
+    },
+    {
+      model_name: "en2vi_post_process"
+      model_version: -1
+      input_map { key: "output_ids" value: "model_output" }
+      output_map { key: "translated_texts" value: "translated_texts" }
+    }
+  ]
+}
