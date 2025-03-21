@@ -1,4 +1,4 @@
-import requests
+`import requests
 import json
 
 BASE_URL = "http://localhost:8094"
@@ -45,4 +45,4 @@ else:
 
 # Test health check
 response = requests.get(f"{BASE_URL}/health")
-print(f"\nHealth check: {response.json()}")`
+print(f"\nHealth check: {response.json()}")``
